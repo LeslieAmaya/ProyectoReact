@@ -58,7 +58,6 @@ class Login extends React.Component {
             </div>
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"></link>
         </div> */
-            <body>
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-xl-10 col-lg-12 col-md-9">
@@ -96,7 +95,6 @@ class Login extends React.Component {
                         </div>
                     </div>
                 </div >
-            </body>
         );
 
     }
