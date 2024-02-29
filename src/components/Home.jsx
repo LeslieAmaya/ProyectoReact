@@ -43,7 +43,7 @@ class Home extends React.Component {
                     <MenuItem> Gráfica de contagio </MenuItem>
                     <MenuItem> Mapa </MenuItem>
                 </Menu>
-                <button className='btn btn-danger' onClick={this.Salir}>Logout</button>
+                <button className="logout" onClick={this.Salir}>Logout</button>
             </Sidebar>
         );
     }
