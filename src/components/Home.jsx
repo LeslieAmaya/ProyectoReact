@@ -3,7 +3,6 @@ import ImageProfile from '../assets/mundo.png'
 
 
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
-import { Link } from 'react-router-dom';
 
 
 class Home extends React.Component {
