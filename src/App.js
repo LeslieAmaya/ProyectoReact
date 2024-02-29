@@ -13,7 +13,7 @@ function App() {
     actual = <Home/>;
   }
   return (
-    <div>
+    <div className="App">
       <header className="App-header">
         {actual}
       </header>

@@ -49,6 +49,7 @@ h3{
   border-radius: 1.5rem;
   box-shadow: 3px 3px 4px #b1b1b1, -3px -3px 4px #ffffff;
   cursor: pointer;
+  margin-left: 70px;
 }
 
  .imagenes {
@@ -59,7 +60,11 @@ h3{
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   }
+.botonlogin{
+  text-align: center;
+  margin-left: 90px;
 
+}
   /*!
  * Start Bootstrap - SB Admin 2 v4.1.3 (https://startbootstrap.com/theme/sb-admin-2)
  * Copyright 2013-2021 Start Bootstrap
@@ -294,21 +299,24 @@ label {
 
 button {
   border-radius: 0;
+  margin-left: 70px;
 }
 
 button:focus:not(:focus-visible) {
   outline: 0;
 }
-
+ 
 input,
 button,
 select,
 optgroup,
 textarea {
-  margin: 0;
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
+  margin-top: 210px;
+  margin-bottom: 20%;
+  margin-left: 70px;
 }
 
 button,
