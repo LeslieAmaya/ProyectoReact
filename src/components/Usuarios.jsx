@@ -2,7 +2,7 @@ import React from 'react';
 import '../App.css'
 import axios from "axios";
 
-const url = "https://apimongo-xso0.onrender.com/api/login";
+const url = "https://apimongo-xso0.onrender.com/api";
 // const url = "http://localhost:3000/api";
 class Usuarios extends React.Component {
     constructor(props) {
@@ -72,7 +72,7 @@ class Usuarios extends React.Component {
                         <div class="card o-hidden border-0 shadow-lg my-5">
                             <div class="row">
                                 <div class="col-lg-6 d-none d-lg-block">
-                                    <table border='1' className="tabla">
+                                    <table border='1' className="table">
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
