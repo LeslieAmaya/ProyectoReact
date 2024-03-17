@@ -1,12 +1,51 @@
+.login{
+  background-color: #04691e;
+  border-radius: 20px;
+  border: none;
+  color: white;
+  padding-left: 30px;
+  padding-top: 10px;
+  padding-right: 30px;
+  padding-bottom: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
 .logout{
-  margin-left: 70px;
-  margin-top: 210px;
-  margin-bottom: 30px;
+  margin-left: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
   border-radius: 8px;
   background-color: #920b0b; /* Green */
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+.new{
+  margin-left: 20px;
+  background-color: rgb(50, 106, 170);
+  border-radius: 8px;
+  border: none;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+.register
+{
+  margin-left: 10px;
+  background-color: rgb(50, 106, 170);
+  border-radius: 8px;
+  border: none;
+  color: white;
+  padding: 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -56,7 +95,7 @@ h3{
   font-size: 0.875rem;
   color: #ffffff;
   font-weight: bold;
-  background-color: #48db43;
+  font: optional;
   width: 100%;
   display: block;
   padding: 0.875rem 1rem;
