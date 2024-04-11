@@ -1,8 +1,8 @@
 import React from "react";
 import axios from "axios";
 
-// const url = "https://apimongo-xso0.onrender.com/api";
-const url = "http://localhost:3000/api";
+const url = "https://apimongo-xso0.onrender.com/api";
+// const url = "http://localhost:3001/api";
 class ContagiosForm extends React.Component {
   constructor(props) {
     super(props);
@@ -83,8 +83,11 @@ class ContagiosForm extends React.Component {
           <div className="col-xl-10 col-lg-12 col-md-9">
             <div className="card o-hidden border-0 shadow-lg my-5">
               <div className="row">
-                <div className="col-lg-6 d-none d-lg-block h-screen">
-                  <table border="1" className="table">
+                <div
+                  className="col-lg-6 table-responsive overflow-auto"
+                  style={{ maxHeight: "670px" }}
+                >
+                  <table border="1" className="table table-striped">
                     <thead>
                       <tr>
                         <th>ID</th>
@@ -93,13 +96,14 @@ class ContagiosForm extends React.Component {
                         <th>Género</th>
                         <th>Fecha de Detección</th>
                         <th>Estado</th>
+                        <th>Finado</th>
                         <th>Eliminar</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {this.state.infectedList.map((infected, i) => {
+                      {this.state.infectedList.map((infected) => {
                         return (
-                          <tr key={i}>
+                          <tr>
                             <td>{infected._id}</td>
                             <td>{infected.name}</td>
                             <td>{infected.age}</td>
@@ -107,7 +111,8 @@ class ContagiosForm extends React.Component {
                               {infected.gender ? "Masculino" : "Femenino"}
                             </td>
                             <td>{infected.detectionDate}</td>
-                            <td>{infected.state}</td>
+                            <td>{infected.state.state}</td>
+                            <td>{infected.death ? "Sí" : "No"}</td>
                             <td>
                               <button
                                 className="btn btn-danger"
@@ -186,6 +191,16 @@ class ContagiosForm extends React.Component {
                             </option>
                           ))}
                         </select>
+                        <br />
+                        <label>Finado: </label>
+                        <input
+                          type="checkbox"
+                          value={this.state.death}
+                          name="death"
+                          onChange={(e) =>
+                            this.setState({ death: e.target.checked })
+                          }
+                        />
                         <br />
 
                         <button
