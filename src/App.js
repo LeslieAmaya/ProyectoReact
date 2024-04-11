@@ -7,6 +7,7 @@ import { Route, Routes } from 'react-router-dom';
 import Menu from './components/Menu';
 import Usuarios from './components/Usuarios';
 import Vacio from './components/Vacio';
+import ContagiosForm from './components/ContagiosForm'
 
 var x = localStorage.getItem('user');
 
@@ -27,6 +28,7 @@ function App() {
         <Route path="/Grafica" element={<Grafica />}> Grafica de Contagio </Route>
         <Route path="/Mapa" element={<Mapa />}> Mapa </Route>
         <Route path="/Usuarios" element={<Usuarios />}> Mapa </Route>
+        <Route path="/Contagios" element={<ContagiosForm />}> Contagios </Route>
       </Routes>
     </div>
   );

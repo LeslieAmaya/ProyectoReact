@@ -20,6 +20,7 @@ class Menu extends React.Component {
                 <Link to="/Grafica" className="btn btn-danger m-1"> Gráfica de contagio </Link>
                 <Link to="/Mapa" className="btn btn-danger m-1"> Mapa </Link>
                 <Link to="/Usuarios" className="btn btn-danger m-1"> Usuarios </Link>
+                <Link to="/Contagios" className="btn btn-danger m-1"> Contagios </Link>
                 <button className="logout" onClick={this.Salir}>Logout</button>
             </div>
         );
