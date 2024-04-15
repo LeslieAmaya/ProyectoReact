@@ -1,20 +1,20 @@
 import React from "react";
+import moment from "moment/moment";
 import axios from "axios";
 
-const url = "https://apimongo-xso0.onrender.com/api";
-// const url = "http://localhost:3001/api";
-class ContagiosForm extends React.Component {
+// const url = "https://apimongo-xso0.onrender.com/api";
+const url = "http://localhost:3001/api";
+class CampainForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      infectedList: [],
+      campainList: [],
       statesList: [],
       selectedState: "",
-      name: "",
-      age: "",
-      gender: "",
-      death: false,
-      detectionDate: "",
+      title: "",
+      description: "",
+      date: "",
+      address: "",
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
@@ -22,14 +22,14 @@ class ContagiosForm extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchInfectedData();
+    this.fetchCampainData();
     this.fetchStatesData();
   }
 
   // Función para obtener la lista de infectados desde el backend
-  fetchInfectedData() {
-    axios.get(`${url}/infected`).then((response) => {
-      this.setState({ infectedList: response.data });
+  fetchCampainData() {
+    axios.get(`${url}/campain`).then((response) => {
+      this.setState({ campainList: response.data });
     });
   }
 
@@ -46,39 +46,36 @@ class ContagiosForm extends React.Component {
   }
 
   handleSave() {
-    const { name, age, gender, death, detectionDate, selectedState } =
-      this.state;
+    const { title, description, date, address, selectedState } = this.state;
 
-    const newInfected = {
-      name,
-      age,
-      gender,
-      death,
-      detectionDate,
+    const newCampain = {
+      title,
+      description,
+      date,
+      address,
       state: selectedState,
     };
 
-    axios.post(`${url}/infected`, newInfected).then(() => {
-      this.fetchInfectedData();
+    axios.post(`${url}/campain`, newCampain).then(() => {
+      this.fetchCampainData();
       this.setState({
-        name: "",
-        age: "",
-        gender: "",
-        death: false,
-        detectionDate: "",
         selectedState: "",
+        title: "",
+        description: "",
+        date: "",
+        address: "",
       });
     });
   }
 
   handleDelete(id) {
-    axios.delete(`${url}/infected/${id}`).then(() => {
-      this.fetchInfectedData();
+    axios.delete(`${url}/campain/${id}`).then(() => {
+      this.fetchCampainData();
     });
   }
   render() {
     return (
-      <div className="container">
+      <div className="container-fluid">
         <div className="row justify-content-center">
           <div className="col-xl-10 col-lg-12 col-md-9">
             <div className="card o-hidden border-0 shadow-lg my-5">
@@ -90,36 +87,44 @@ class ContagiosForm extends React.Component {
                   <table border="1" className="table table-striped">
                     <thead>
                       <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Edad</th>
-                        <th>Género</th>
-                        <th>Fecha de Detección</th>
+                        <th>Titulo</th>
+                        <th>Descripción</th>
+                        <th>Dirección</th>
                         <th>Estado</th>
-                        <th>Finado</th>
-                        <th>Eliminar</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {this.state.infectedList.map((infected) => {
+                      {this.state.campainList.map((campain) => {
                         return (
                           <tr>
-                            <td>{infected._id}</td>
-                            <td>{infected.name}</td>
-                            <td>{infected.age}</td>
+                            <td>{campain.title}</td>
+                            <td>{campain.description}</td>
+                            <td>{campain.death ? "Sí" : "No"}</td>
+                            <td>{campain.state.state}</td>
                             <td>
-                              {infected.gender ? "Masculino" : "Femenino"}
+                              {moment(campain.date)
+                                .subtract(10, "days")
+                                .calendar()}
                             </td>
-                            <td>{infected.detectionDate}</td>
-                            <td>{infected.state.state}</td>
-                            <td>{infected.death ? "Sí" : "No"}</td>
                             <td>
-                              <button
-                                className="btn btn-danger"
-                                onClick={() => this.handleDelete(infected._id)}
-                              >
-                                Eliminar
-                              </button>
+                              <div className="d-flex">
+                                <button
+                                  className="btn btn-warning mr-1"
+                                  // onClick={() =>
+                                  //   this.handleDelete(infected._id)
+                                  // }
+                                >
+                                  Editar
+                                </button>
+                                <button
+                                  className="btn btn-danger"
+                                  onClick={() => this.handleDelete(campain._id)}
+                                >
+                                  Eliminar
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         );
@@ -132,12 +137,12 @@ class ContagiosForm extends React.Component {
                     <br />
                     <div className="text-center">
                       <h2 className="h4 text-gray-900 mb-4">
-                        Registrar Nuevo Infectado
+                        Registrar Nueva Campaña
                       </h2>
                     </div>
                     <div className="user">
                       <form className="form-group">
-                        <input
+                        {/* <input
                           value={this.state.name}
                           name="name"
                           type="text"
@@ -145,34 +150,41 @@ class ContagiosForm extends React.Component {
                           className="form-control form-control-user"
                           onChange={this.handleChange}
                         />
-                        <br />
+                        <br /> */}
 
                         <input
-                          value={this.state.age}
-                          name="age"
+                          value={this.state.title}
+                          name="title"
                           type="text"
-                          placeholder="Edad"
+                          placeholder="Titulo"
                           className="form-control form-control-user"
                           onChange={this.handleChange}
                         />
                         <br />
 
-                        <select
-                          value={this.state.gender}
-                          name="gender"
+                        <input
+                          value={this.state.description}
+                          name="description"
+                          type="text"
+                          placeholder="Descripción"
                           className="form-control form-control-user"
                           onChange={this.handleChange}
-                        >
-                          <option value="">Seleccione Género</option>
-                          <option value="true">Masculino</option>
-                          <option value="false">Femenino</option>
-                        </select>
+                        />
                         <br />
 
                         <input
-                          value={this.state.detectionDate}
-                          name="detectionDate"
+                          value={this.state.date}
+                          name="date"
                           type="date"
+                          className="form-control form-control-user"
+                          onChange={this.handleChange}
+                        />
+                        <br />
+                        <input
+                          value={this.state.address}
+                          name="address"
+                          type="text"
+                          placeholder="Dirección"
                           className="form-control form-control-user"
                           onChange={this.handleChange}
                         />
@@ -191,16 +203,6 @@ class ContagiosForm extends React.Component {
                             </option>
                           ))}
                         </select>
-                        <br />
-                        <label>Finado: </label>
-                        <input
-                          type="checkbox"
-                          value={this.state.death}
-                          name="death"
-                          onChange={(e) =>
-                            this.setState({ death: e.target.checked })
-                          }
-                        />
                         <br />
 
                         <button
@@ -235,4 +237,4 @@ class ContagiosForm extends React.Component {
   }
 }
 
-export default ContagiosForm;
+export default CampainForm;
