@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import moment from "moment/moment";
 
 const url = "https://apimongo-xso0.onrender.com/api";
 // const url = "http://localhost:3001/api";
@@ -22,7 +23,8 @@ const processData = (data) => {
   ];
 
   data.forEach((item) => {
-    const date = new Date(item.detectionDate);
+    const dateMoment = new moment(item.detectionDate).format();
+    const date = new Date(dateMoment);
     const year = date.getFullYear();
     const monthIndex = date.getMonth();
     const state = item.state.state;
@@ -70,8 +72,8 @@ class ContagiosPage extends React.Component {
   handleSearchChange = (event) => {
     const { name, value } = event.target;
     this.setState({ [name]: value }, () => {
-      console.log("Selected Month:", this.state.selectedMonth);
-      console.log("Selected State:", this.state.selectedState);
+      // console.log("Selected Month:", this.state.selectedMonth);
+      // console.log("Selected State:", this.state.selectedState);
       this.applyFilters();
     });
   };
@@ -80,11 +82,15 @@ class ContagiosPage extends React.Component {
     let filteredList = this.state.infectedList;
 
     if (this.state.selectedMonth) {
-      filteredList = filteredList.filter(
-        (item) =>
-          new Date(item.detectionDate).toISOString().slice(0, 7) ===
-          this.state.selectedMonth
-      );
+      filteredList = filteredList.filter((item) => {
+        const detectionDate = new Date(item.detectionDate);
+        if (isNaN(detectionDate.getTime())) {
+          return false; // Si la fecha no es válida, descartar el elemento
+        }
+        return (
+          detectionDate.toISOString().slice(0, 7) === this.state.selectedMonth
+        );
+      });
     }
 
     if (this.state.selectedState) {
