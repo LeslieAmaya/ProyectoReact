@@ -10,14 +10,18 @@ class CampainForm extends React.Component {
     this.state = {
       campainList: [],
       statesList: [],
+      id: "",
       selectedState: "",
       title: "",
       description: "",
       date: "",
       address: "",
     };
+    this.isEditing = false;
     this.handleChange = this.handleChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
+    this.handleUpdate = this.handleUpdate.bind(this);
+    this.handleUpdateClick = this.handleUpdateClick.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
   }
 
@@ -68,11 +72,55 @@ class CampainForm extends React.Component {
     });
   }
 
+  handleUpdateClick(id) {
+    this.isEditing = true;
+    const selectedCampain = this.state.campainList.find(
+      (campain) => campain._id === id
+    );
+
+    // Si se encuentra la campaña, actualiza el estado con sus valores
+    if (selectedCampain) {
+      this.setState({
+        id: id,
+        title: selectedCampain.title,
+        description: selectedCampain.description,
+        date: moment(selectedCampain.date).format("YYYY-MM-DD"),
+        address: selectedCampain.address,
+        selectedState: selectedCampain.state._id,
+      });
+    }
+  }
+
+  handleUpdate(id) {
+    const { title, description, date, address, selectedState } = this.state;
+
+    const newCampain = {
+      title,
+      description,
+      date,
+      address,
+      state: selectedState,
+    };
+
+    axios.put(`${url}/campain/${id}`, newCampain).then(() => {
+      this.fetchCampainData();
+      this.setState({
+        selectedState: "",
+        title: "",
+        description: "",
+        date: "",
+        address: "",
+      });
+      this.isEditing = false;
+    });
+  }
+
   handleDelete(id) {
     axios.delete(`${url}/campain/${id}`).then(() => {
       this.fetchCampainData();
     });
   }
+
   render() {
     return (
       <div className="container-fluid">
@@ -98,10 +146,10 @@ class CampainForm extends React.Component {
                     <tbody>
                       {this.state.campainList.map((campain) => {
                         return (
-                          <tr>
+                          <tr key={campain._id}>
                             <td>{campain.title}</td>
                             <td>{campain.description}</td>
-                            <td>{campain.death ? "Sí" : "No"}</td>
+                            <td>{campain.address}</td>
                             <td>{campain.state.state}</td>
                             <td>
                               {moment(campain.date)
@@ -111,10 +159,11 @@ class CampainForm extends React.Component {
                             <td>
                               <div className="d-flex">
                                 <button
-                                  className="btn btn-warning mr-1"
-                                  // onClick={() =>
-                                  //   this.handleDelete(infected._id)
-                                  // }
+                                  type="button"
+                                  className="btn btn-warning"
+                                  onClick={() =>
+                                    this.handleUpdateClick(campain._id)
+                                  }
                                 >
                                   Editar
                                 </button>
@@ -137,21 +186,13 @@ class CampainForm extends React.Component {
                     <br />
                     <div className="text-center">
                       <h2 className="h4 text-gray-900 mb-4">
-                        Registrar Nueva Campaña
+                        {this.isEditing
+                          ? "Editar Campaña"
+                          : "Registrar Nueva Campaña"}
                       </h2>
                     </div>
                     <div className="user">
                       <form className="form-group">
-                        {/* <input
-                          value={this.state.name}
-                          name="name"
-                          type="text"
-                          placeholder="Nombre"
-                          className="form-control form-control-user"
-                          onChange={this.handleChange}
-                        />
-                        <br /> */}
-
                         <input
                           value={this.state.title}
                           name="title"
@@ -207,18 +248,28 @@ class CampainForm extends React.Component {
 
                         <button
                           type="button"
-                          className="btn btn-secondary"
+                          className="btn btn-secondary mr-2"
                           onClick={this.LimpiarDatos}
                         >
                           Nuevo
                         </button>
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={this.handleSave}
-                        >
-                          Guardar
-                        </button>
+                        {this.isEditing ? (
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={() => this.handleUpdate(this.state.id)}
+                          >
+                            Editar
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={this.handleSave}
+                          >
+                            Guardar
+                          </button>
+                        )}
                       </form>
                       <br />
                       <br />

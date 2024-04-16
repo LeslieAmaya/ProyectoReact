@@ -26,7 +26,6 @@ function App() {
       <Routes>
         <Route path="/Vacio" element={<Vacio />}></Route>
         <Route path="/Informacion" element={<Informacion />} />
-        <Route path="/Grafica" element={<Grafica />} />
         <Route path="/Usuarios" element={<Usuarios />} />
         <Route path="/Contagios" element={<ContagiosPage />} />
         <Route path="/ContagiosForm" element={<ContagiosForm />} />

@@ -20,10 +20,6 @@ class Menu extends React.Component {
           {" "}
           Información{" "}
         </Link>
-        <Link to="/Grafica" className="btn btn-danger m-1">
-          {" "}
-          Gráfica de contagio{" "}
-        </Link>
         <Link to="/Usuarios" className="btn btn-danger m-1">
           {" "}
           Usuarios{" "}

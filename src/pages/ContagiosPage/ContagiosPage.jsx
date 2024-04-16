@@ -1,97 +1,175 @@
 import React from "react";
-import moment from "moment/moment";
 import axios from "axios";
 
 const url = "https://apimongo-xso0.onrender.com/api";
 // const url = "http://localhost:3001/api";
+
+const processData = (data) => {
+  const processedData = {};
+  const months = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
+
+  data.forEach((item) => {
+    const date = new Date(item.detectionDate);
+    const year = date.getFullYear();
+    const monthIndex = date.getMonth();
+    const state = item.state.state;
+    const key = `${state}-${year}-${monthIndex}`;
+
+    if (!processedData[key]) {
+      processedData[key] = {
+        month: `${months[monthIndex]} ${year}`,
+        state: state,
+        infected: 0,
+        deaths: 0,
+      };
+    }
+
+    processedData[key].infected++;
+
+    if (item.death) {
+      processedData[key].deaths++;
+    }
+  });
+
+  return Object.values(processedData);
+};
+
 class ContagiosPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       infectedList: [],
+      filteredInfectedList: [],
       statesList: [],
+      selectedMonth: "",
       selectedState: "",
-      age: "",
-      gender: false,
-      death: false,
-      detectionDate: "",
     };
   }
 
   componentDidMount() {
-    this.fetchInfectedData();
-    this.fetchStatesData();
-  }
-
-  // Función para obtener la lista de infectados desde el backend
-  fetchInfectedData() {
-    axios.get(`${url}/infected`).then((response) => {
-      this.setState({ infectedList: response.data });
+    this.fetchInfectedData().then(() => {
+      this.fetchStatesData().then(() => {
+        this.applyFilters(); // Aplicar filtros después de cargar los datos
+      });
     });
   }
 
-  // Función para obtener la lista de estados desde el backend
+  handleSearchChange = (event) => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value }, () => {
+      console.log("Selected Month:", this.state.selectedMonth);
+      console.log("Selected State:", this.state.selectedState);
+      this.applyFilters();
+    });
+  };
+
+  applyFilters() {
+    let filteredList = this.state.infectedList;
+
+    if (this.state.selectedMonth) {
+      filteredList = filteredList.filter(
+        (item) =>
+          new Date(item.detectionDate).toISOString().slice(0, 7) ===
+          this.state.selectedMonth
+      );
+    }
+
+    if (this.state.selectedState) {
+      filteredList = filteredList.filter(
+        (item) => item.state._id === this.state.selectedState
+      );
+    }
+
+    this.setState({ filteredInfectedList: filteredList });
+  }
+
+  fetchInfectedData() {
+    return axios.get(`${url}/infected`).then((response) => {
+      this.setState({
+        infectedList: response.data,
+        filteredInfectedList: response.data, // Actualizar filteredInfectedList aquí
+      });
+      processData(response.data);
+    });
+  }
+
   fetchStatesData() {
-    axios.get(`${url}/state`).then((response) => {
+    return axios.get(`${url}/state`).then((response) => {
       this.setState({ statesList: response.data });
     });
   }
 
   render() {
+    const processedData = processData(this.state.filteredInfectedList);
+
     return (
       <div className="container-fluid">
         <form className="d-flex gap-1">
-          {/* <input
-            className="form-control"
-            type="text"
-            placeholder="Buscar por título"
-            name="searchTitle"
-            value={searchTitle}
-            onChange={this.handleSearchChange}
-          />
-          <input
-            className="form-control"
-            type="text"
-            placeholder="Buscar por descripción"
-            name="searchDescription"
-            value={searchDescription}
-            onChange={this.handleSearchChange}
-          /> */}
           <input
             className="form-control"
             type="month"
             placeholder="Mes"
-            name="searchMonth"
+            name="selectedMonth"
+            value={this.state.selectedMonth}
+            onChange={this.handleSearchChange}
           />
-          <select className="form-control" name="searchState">
+          <select
+            className="form-control"
+            name="selectedState"
+            value={this.state.selectedState}
+            onChange={this.handleSearchChange}
+          >
             <option value="">Seleccionar estado</option>
             {this.state.statesList.map((state) => (
-              <option key={state.id} value={state._id}>
+              <option key={state._id} value={state._id}>
                 {state.state}
               </option>
             ))}
           </select>
         </form>
         <br />
-        <div class="row">
-          {/* {filteredCampains.map((campain) => {
-            return (
-              <div class="col-md-4">
-                <div class="card">
-                  <div class="card-body">
-                    <h5 class="card-title">{campain.title}</h5>
-                    <p class="card-text">{campain.description}</p>
-                  </div>
-                  <div className="card-footer d-flex">
-                    <span>{campain.address}</span>
-                    <span>
-                      {moment(campain.date).subtract(10, "days").calendar()}
-                    </span>
+        <div className="row">
+          {processedData.map((item) => (
+            <div key={item.state + item.month} className="col-md-4 mb-4">
+              <div className="card">
+                <div className="card-header">
+                  <h5 className="card-title">
+                    {item.state} - {item.month}
+                  </h5>
+                </div>
+                <div className="card-body">
+                  <div className="h4">Total de infectados: {item.infected}</div>
+                  <div className="progress">
+                    <div
+                      className="progress-bar bg-danger"
+                      role="progressbar"
+                      style={{
+                        width: `${(item.deaths / item.infected) * 100}%`,
+                      }}
+                      aria-valuenow={item.deaths}
+                      aria-valuemin="0"
+                      aria-valuemax={item.infected}
+                    >
+                      Defunciones: {item.deaths}
+                    </div>
                   </div>
                 </div>
               </div>
-            );
-          })} */}
+            </div>
+          ))}
         </div>
       </div>
     );

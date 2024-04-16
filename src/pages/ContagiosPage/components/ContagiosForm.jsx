@@ -16,6 +16,7 @@ class ContagiosForm extends React.Component {
       death: false,
       detectionDate: "",
     };
+    this.isEditing = false;
     this.handleChange = this.handleChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -68,6 +69,51 @@ class ContagiosForm extends React.Component {
     });
   }
 
+  handleUpdateClick(id) {
+    this.isEditing = true;
+    const selectedInfected = this.state.infectedList.find(
+      (infected) => infected._id === id
+    );
+
+    // Si se encuentra la campaña, actualiza el estado con sus valores
+    if (selectedInfected) {
+      this.setState({
+        id: id,
+        age: selectedInfected.age,
+        gender: selectedInfected.gender,
+        death: selectedInfected.death,
+        detectionDate: moment(selectedInfected.detectionDate).format(
+          "YYYY-MM-DD"
+        ),
+        selectedState: selectedInfected.state._id,
+      });
+    }
+  }
+
+  handleUpdate(id) {
+    const { age, gender, death, detectionDate, selectedState } = this.state;
+
+    const newInfected = {
+      age,
+      gender,
+      death,
+      detectionDate,
+      state: selectedState,
+    };
+
+    axios.put(`${url}/infected/${id}`, newInfected).then(() => {
+      this.fetchInfectedData();
+      this.setState({
+        age: "",
+        gender: "",
+        death: false,
+        detectionDate: "",
+        selectedState: "",
+      });
+      this.isEditing = false;
+    });
+  }
+
   handleDelete(id) {
     axios.delete(`${url}/infected/${id}`).then(() => {
       this.fetchInfectedData();
@@ -87,8 +133,6 @@ class ContagiosForm extends React.Component {
                   <table border="1" className="table table-striped">
                     <thead>
                       <tr>
-                        {/* <th>ID</th> */}
-                        {/* <th>Nombre</th> */}
                         <th>Edad</th>
                         <th>Género</th>
                         <th>Fecha de Detección</th>
@@ -100,9 +144,7 @@ class ContagiosForm extends React.Component {
                     <tbody>
                       {this.state.infectedList.map((infected) => {
                         return (
-                          <tr>
-                            {/* <td>{infected._id}</td> */}
-                            {/* <td>{infected.name}</td> */}
+                          <tr key={infected._id}>
                             <td>{infected.age}</td>
                             <td>
                               {infected.gender ? "Masculino" : "Femenino"}
@@ -118,9 +160,9 @@ class ContagiosForm extends React.Component {
                               <div className="d-flex">
                                 <button
                                   className="btn btn-warning mr-1"
-                                  // onClick={() =>
-                                  //   this.handleDelete(infected._id)
-                                  // }
+                                  onClick={() =>
+                                    this.handleUpdateClick(infected._id)
+                                  }
                                 >
                                   Editar
                                 </button>
@@ -145,21 +187,13 @@ class ContagiosForm extends React.Component {
                     <br />
                     <div className="text-center">
                       <h2 className="h4 text-gray-900 mb-4">
-                        Registrar Nuevo Infectado
+                        {this.isEditing
+                          ? "Editar Infectado"
+                          : "Registrar Nuevo Infectado"}
                       </h2>
                     </div>
                     <div className="user">
                       <form className="form-group">
-                        {/* <input
-                          value={this.state.name}
-                          name="name"
-                          type="text"
-                          placeholder="Nombre"
-                          className="form-control form-control-user"
-                          onChange={this.handleChange}
-                        />
-                        <br /> */}
-
                         <input
                           value={this.state.age}
                           name="age"
@@ -218,18 +252,28 @@ class ContagiosForm extends React.Component {
 
                         <button
                           type="button"
-                          className="btn btn-secondary"
+                          className="btn btn-secondary  mr-2"
                           onClick={this.LimpiarDatos}
                         >
                           Nuevo
                         </button>
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={this.handleSave}
-                        >
-                          Guardar
-                        </button>
+                        {this.isEditing ? (
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={() => this.handleUpdate(this.state.id)}
+                          >
+                            Editar
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={this.handleSave}
+                          >
+                            Guardar
+                          </button>
+                        )}
                       </form>
                       <br />
                       <br />
